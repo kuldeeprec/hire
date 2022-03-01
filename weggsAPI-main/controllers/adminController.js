@@ -4,6 +4,22 @@ const Product = require("../models/product");
 const WhereToBuy = require("../models/wheretobuy");
 const WhereClause = require("../middlewares/whereClause");
 
+//ADMIN GET ONE USER
+exports.getOneCustomer = async (req, res) => {
+  try {
+    const Founduser = await User.findById(req.params.id);
+    Founduser.password = undefined;
+    res.status(200).json({
+      success: true,
+      Founduser,
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "ERROR FROM GET ONE USER",
+    });
+  }
+};
+
 //GET TOTAL CUSTOMERS COUNT FOR ALL TIME
 exports.getTotalCustomersCount = async (req, res) => {
   try {
@@ -51,7 +67,7 @@ exports.getTotalCustomersPagination = async (req, res) => {
 
 //GET TOTAL ORDERS WITH PAGINATION
 exports.getAllOrdersPagination = async (req, res) => {
-  const limit = 3 || req.query.limit;
+  const limit = req.query.limit;
 
   try {
     const totalOrderCount = await Order.countDocuments();
@@ -82,7 +98,13 @@ exports.getAllOrdersPagination = async (req, res) => {
 
 //GET TOTAL PRODUCTS WITH PAGINATION
 exports.getAllProductsPagination = async (req, res) => {
-  const limit = 3 || req.query.limit;
+  // if(!req.query.limit){
+  //   const limit = 3;
+  // }else{
+  //   const limit = req.query.limit;
+  // }
+
+  const limit = req.query.limit;
 
   try {
     const totalProductCount = await Product.countDocuments();
@@ -113,7 +135,7 @@ exports.getAllProductsPagination = async (req, res) => {
 
 //GET TOTAL WHERE-TO'S WITH PAGINATION
 exports.getAllWhereTosPagination = async (req, res) => {
-  const limit = 3 || req.query.limit;
+  const limit = req.query.limit;
 
   try {
     const totalWhereToCount = await WhereToBuy.countDocuments();
