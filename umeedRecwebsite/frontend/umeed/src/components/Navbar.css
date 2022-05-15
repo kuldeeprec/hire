@@ -1,0 +1,103 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  /* background-color: red; */
+}
+.u-logo-and-u-name {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 1%;
+  padding-bottom: 1.2%;
+  margin-left: 2%;
+  box-sizing: border-box;
+}
+.u-logo {
+  height: 100%;
+}
+.logo-display {
+  width: 7rem;
+  size: auto;
+}
+.picture {
+  width: 100%;
+  size: auto;
+}
+.u-name {
+  font-size: 1.5rem;
+  margin-left: 1.5rem;
+  color: #c6d042;
+  font-weight: bold;
+}
+.c-logo {
+  padding-top: 0.8%;
+  width: 6rem;
+  size: auto;
+  margin-right: 1%;
+}
+.navbar-header {
+  background-color: #161316;
+  padding: 0.3%;
+  text-align: center;
+  /* align-items: center; */
+}
+.leaf {
+  text-decoration: none;
+  display: inline;
+  color: #000;
+  margin-left: 2%;
+  font-size: 1.2rem;
+  position: relative;
+}
+.leaf:hover {
+  color: #c6d042;
+}
+
+li {
+  list-style-type: none;
+}
+.leaf .icon {
+  margin-right: 0.4%;
+  margin-bottom: 0.5rem;
+  font-size: 1.4rem;
+}
+a {
+  text-decoration: none;
+  color: white;
+}
+.expanded {
+  display: none;
+  width: 150%;
+  align-items: center;
+  position: absolute;
+  list-style-type: none;
+  text-decoration: none !important;
+  top: 100%;
+  background-color: #000;
+  z-index: 1000;
+  font-size: 1rem;
+  padding-left: 0;
+  left: -30px;
+  border-radius: 2%;
+  font-size: 1rem;
+}
+.leaf:hover .expanded {
+  display: flex;
+  flex-direction: column;
+}
+.expanded a {
+  width: 100%;
+}
+
+.expanded-item {
+  width: 100%;
+  text-align: center;
+  color: white !important;
+  padding: 5% 0;
+  margin: 0px;
+}
+.expanded-item:hover {
+  cursor: pointer;
+  background-color: red;
+}
