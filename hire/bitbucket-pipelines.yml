@@ -1,0 +1,90 @@
+# This is a sample build configuration for JavaScript.
+# Check our guides at https://confluence.atlassian.com/x/14UWN for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+image: node:10.15.3
+
+pipelines:
+    custom:
+        lint:
+            - step:
+                  caches:
+                      - node
+                      - client-node-modules
+                      - server-node-modules
+                  script:
+                      - ls
+                      - npm install eslint -g
+                      - cd server
+                      - npm install
+                      - eslint .
+                      - cd ..
+                      - cd client
+                      - npm install
+                      - eslint .
+                      - cd ..
+        build-and-deploy-to-prod:
+            - step:
+                  size: 2x
+                  deployment: production
+                  caches:
+                      - docker
+                  script:
+                      - docker build ./ -t $AWS_ECR_REPOSITORY --build-arg ENV=prod
+                      - pipe: "atlassian/aws-ecr-push-image:1.1.0"
+                        variables:
+                            AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+                            AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+                            AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+                            IMAGE_NAME: $AWS_ECR_REPOSITORY
+                      - pipe: "atlassian/ssh-run:0.2.4"
+                        variables:
+                            SSH_USER: ec2-user
+                            SERVER: $SERVER_IP
+                            SSH_KEY: $SSH_KEY
+                            MODE: script
+                            COMMAND: prod-container-script.sh
+                  services:
+                      - docker
+        build-and-deploy-to-dev:
+            - step:
+                  size: 2x
+                  deployment: development
+                  caches:
+                      - docker
+                  script:
+                      - docker build ./ -t $AWS_ECR_REPOSITORY --build-arg ENV=dev
+                      - pipe: "atlassian/aws-ecr-push-image:1.1.0"
+                        variables:
+                            AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+                            AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+                            AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+                            IMAGE_NAME: $AWS_ECR_REPOSITORY
+                      - pipe: "atlassian/ssh-run:0.2.4"
+                        variables:
+                            SSH_USER: ec2-user
+                            SERVER: $SERVER_IP
+                            SSH_KEY: $SSH_KEY
+                            MODE: script
+                            COMMAND: dev-container-script.sh
+                  services:
+                      - docker
+        deploy-to-test:
+            - step:
+                  deployment: development
+                  script:
+                      - pipe: "atlassian/ssh-run:0.2.4"
+                        variables:
+                            SSH_USER: ec2-user
+                            SERVER: $SERVER_IP
+                            SSH_KEY: $SSH_KEY
+                            MODE: script
+                            COMMAND: dev-container-script.sh
+definitions:
+    services:
+        docker:
+            memory: 7128
+    caches:
+        client-node-modules: /app/client/node_modules
+        server-node-modules: /app/server/node_modules
